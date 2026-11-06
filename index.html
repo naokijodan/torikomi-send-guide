@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>とりこみ君からスプレッドシートへ送る手順｜1回目は内容確認→スプレッドシートに追加、2回目から直接送信</title>
+<style>
+  :root {
+    --ink: #3a3245;
+    --ink-soft: #7b7387;
+    --cream: #fff9f0;
+    --card: #ffffff;
+    --peach: #ff8a65;
+    --mint: #2bd4a0;
+    --sky: #4fa8ff;
+    --grape: #9b6bff;
+    --sun: #ffc94d;
+    --pink: #ff6fa5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,201,77,0.18), transparent 28%),
+      radial-gradient(circle at 88% 14%, rgba(79,168,255,0.16), transparent 30%),
+      radial-gradient(circle at 70% 88%, rgba(255,111,165,0.14), transparent 32%),
+      var(--cream);
+    line-height: 1.9;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1480px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Top nav ---------- */
+  .topnav { padding: 22px 0 0; }
+  .topnav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .home-link {
+    display: inline-flex; align-items: center; gap: 7px;
+    text-decoration: none; font-weight: 800; font-size: 14px; color: var(--ink-soft);
+    background: rgba(255,255,255,0.8); padding: 9px 16px; border-radius: 999px;
+    box-shadow: 0 6px 14px rgba(160,140,120,0.12);
+    transition: transform .15s, box-shadow .15s, color .15s;
+  }
+  .home-link:hover { transform: translateY(-2px); color: var(--peach); box-shadow: 0 10px 20px rgba(160,140,120,0.18); }
+  .brand-tag {
+    font-size: 12.5px; font-weight: 800; color: #fff; padding: 7px 15px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--sky), var(--grape));
+    box-shadow: 0 6px 14px rgba(79,168,255,0.30);
+  }
+
+  /* ---------- Header ---------- */
+  header { padding: 48px 0 50px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-size: 14px; font-weight: 800; letter-spacing: 0.04em;
+    color: #fff; padding: 8px 20px; border-radius: 999px; margin-bottom: 24px;
+    background: linear-gradient(90deg, var(--peach), var(--pink));
+    box-shadow: 0 8px 18px rgba(255,111,165,0.35);
+  }
+  h1 { font-size: clamp(25px, 4.4vw, 40px); font-weight: 900; line-height: 1.35; margin-bottom: 22px; }
+  .lead {
+    font-size: clamp(15px, 2.2vw, 17px); color: var(--ink-soft); max-width: 900px; margin: 0 auto;
+    background: rgba(255,255,255,0.7); border-radius: 18px; padding: 16px 22px;
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 48px 0; }
+  .section-head { text-align: center; margin-bottom: 34px; }
+  .section-head h2 { font-size: clamp(22px, 3.6vw, 30px); font-weight: 900; }
+  .section-head .emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+
+  /* ---------- Intro cards ---------- */
+  .intro { display: grid; gap: 14px; }
+  .info-card {
+    border-radius: 20px; padding: 18px 22px; font-size: 14.5px; line-height: 1.85;
+    background: var(--card); border: 2px solid rgba(0,0,0,0.03);
+    box-shadow: 0 8px 20px rgba(160,140,120,0.10);
+  }
+  .info-card .ic-title { display: block; font-weight: 900; font-size: 15.5px; margin-bottom: 4px; }
+  .info-card.c-sky { background: rgba(79,168,255,0.10); border-color: rgba(79,168,255,0.35); }
+  .info-card.c-sun { background: rgba(255,201,77,0.16); border-color: rgba(255,201,77,0.55); }
+  .info-card.c-mint { background: rgba(43,212,160,0.10); border-color: rgba(43,212,160,0.4); }
+  .info-card.c-alert { background: rgba(255,111,165,0.10); border-color: rgba(255,111,165,0.6); }
+  .info-card ol { margin: 6px 0 0 1.4em; }
+  .info-card ol li { margin-bottom: 6px; }
+  .info-card a { color: var(--pink); font-weight: 800; text-decoration: none; border-bottom: 2px solid rgba(255,111,165,0.35); }
+  .info-card a:hover { border-bottom-color: var(--pink); }
+  .info-card ul { margin: 6px 0 0 1.3em; }
+
+  /* ---------- Steps ---------- */
+  .steps { display: grid; gap: 18px; }
+  .step {
+    display: flex; gap: 18px; align-items: flex-start;
+    background: var(--card); border-radius: 24px; padding: 24px 24px;
+    box-shadow: 0 10px 26px rgba(160,140,120,0.12);
+    border: 2px solid rgba(0,0,0,0.03);
+  }
+  .step .num {
+    flex: 0 0 48px; width: 48px; height: 48px; border-radius: 16px;
+    display: grid; place-items: center; font-size: 22px; font-weight: 900; color: #fff;
+  }
+  .step:nth-child(1) .num { background: linear-gradient(135deg, var(--mint), var(--sun)); }
+  .step:nth-child(2) .num { background: linear-gradient(135deg, var(--sun), var(--peach)); }
+  .step:nth-child(3) .num { background: linear-gradient(135deg, var(--sky), var(--grape)); }
+  .step:nth-child(4) .num { background: linear-gradient(135deg, var(--mint), var(--sky)); }
+  .step:nth-child(5) .num { background: linear-gradient(135deg, var(--pink), var(--grape)); }
+  .step:nth-child(6) .num { background: linear-gradient(135deg, var(--grape), var(--peach)); }
+  .step .st-body { flex: 1; min-width: 0; }
+  .step .st-title { display: block; font-size: 16.5px; font-weight: 800; margin-bottom: 5px; line-height: 1.5; }
+  .step .st-text { font-size: 14px; color: var(--ink-soft); line-height: 1.85; margin-bottom: 6px; }
+  .step .st-text strong { color: var(--ink); }
+  .step .st-note { font-size: 12.5px; font-weight: 800; color: #9a6a00; background: rgba(255,170,60,0.14); border: 2px solid rgba(255,170,60,0.55); border-radius: 14px; padding: 10px 14px; margin-top: 12px; line-height: 1.7; }
+
+  /* ---------- Inline images ---------- */
+  .shot { display: block; margin-top: 14px; cursor: zoom-in; }
+  .shot img {
+    display: block; width: 100%; height: auto;
+    border-radius: 14px; box-shadow: 0 10px 26px rgba(160,140,120,0.25);
+    border: 1px solid rgba(79,168,255,0.25); background: #fff;
+  }
+  .shot:focus-visible { outline: 3px solid rgba(79,168,255,0.55); outline-offset: 3px; border-radius: 14px; }
+  .zoom-hint { display: block; margin-top: 6px; font-size: 11.5px; font-weight: 800; color: #2f7fd1; text-align: center; }
+
+  /* ---------- OK / NG cards ---------- */
+  .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  .vs-card { border-radius: 18px; padding: 16px 18px; font-size: 14px; line-height: 1.85; color: var(--ink); }
+  .vs-card .vs-title { display: block; font-weight: 900; font-size: 15px; margin-bottom: 6px; }
+  .vs-card.ok { background: rgba(43,212,160,0.10); border: 2px solid rgba(43,212,160,0.5); }
+  .vs-card.ng { background: rgba(255,111,165,0.09); border: 2px solid rgba(255,111,165,0.45); }
+  .vs-card ul { margin: 6px 0 0 1.2em; }
+  .vs-card li { margin-bottom: 4px; }
+
+  /* ---------- Glossary ---------- */
+  details.glossary {
+    background: var(--card); border-radius: 20px; padding: 6px 22px;
+    box-shadow: 0 8px 20px rgba(160,140,120,0.10); border: 2px solid rgba(0,0,0,0.03);
+  }
+  details.glossary summary { cursor: pointer; font-weight: 900; font-size: 16px; padding: 14px 0; }
+  details.glossary dl { padding-bottom: 14px; }
+  details.glossary dt { font-weight: 900; color: var(--grape); margin-top: 10px; }
+  details.glossary dd { font-size: 14px; color: var(--ink-soft); }
+
+  /* ---------- Next-step buttons ---------- */
+  .nextstep { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
+  .big-btn {
+    flex: 1 1 260px; max-width: 320px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    text-decoration: none; text-align: center;
+    padding: 22px 24px; border-radius: 22px;
+    font-weight: 900; font-size: clamp(15px, 2.4vw, 18px); color: #fff;
+    box-shadow: 0 12px 26px rgba(79,168,255,0.30);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .big-btn .b-emoji { font-size: 24px; }
+  .big-btn.secondary { background: linear-gradient(90deg, var(--sky), var(--grape)); }
+  .big-btn.ghost { background: #fff; color: var(--ink-soft); box-shadow: 0 10px 22px rgba(160,140,120,0.14); border: 2px solid rgba(0,0,0,0.05); }
+  .big-btn:hover { transform: translateY(-3px); box-shadow: 0 18px 34px rgba(79,168,255,0.42); }
+  .big-btn.ghost:hover { box-shadow: 0 16px 30px rgba(160,140,120,0.2); color: var(--ink); }
+
+  footer { padding: 50px 0 76px; text-align: center; color: var(--ink-soft); font-size: 14px; }
+
+  @media (max-width: 600px) {
+    header { padding: 36px 0 40px; }
+    .step { padding: 20px 18px; gap: 14px; }
+    .step { display: grid; grid-template-columns: 48px 1fr; column-gap: 14px; row-gap: 0; }
+    .step .st-body { display: contents; }
+    .step .st-title, .step .st-text { grid-column: 2; }
+    .step .shot { grid-column: 1 / -1; }
+    .vs { grid-template-columns: 1fr; }
+    .nextstep { flex-direction: column; align-items: stretch; }
+    .big-btn { max-width: none; }
+    .topnav .wrap { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .big-btn, .home-link { transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Lightbox ---------- */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+    padding: 24px; background: rgba(40,32,50,0.72);
+    -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  }
+  .lightbox.is-open { display: flex; }
+  .lightbox .lb-content { position: relative; max-width: 92vw; max-height: 88vh; display: flex; align-items: center; justify-content: center; }
+  .lightbox .lb-content img {
+    display: block; max-width: 92vw; max-height: 88vh; width: auto; height: auto;
+    border-radius: 16px; background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .lightbox .lb-close {
+    position: absolute; top: -14px; right: -14px; width: 44px; height: 44px; border-radius: 50%;
+    border: none; cursor: pointer; display: grid; place-items: center;
+    font-size: 24px; font-weight: 900; line-height: 1; color: #fff;
+    background: linear-gradient(135deg, var(--peach), var(--pink));
+    box-shadow: 0 8px 20px rgba(255,111,165,0.5);
+  }
+  .lightbox .lb-close:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  /* ---------- Added for this guide ---------- */
+  .flow { display: flex; align-items: stretch; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .flow .fbox { flex: 1 1 200px; max-width: 300px; background: var(--card); border-radius: 20px; padding: 16px 16px; text-align: center; font-weight: 800; font-size: 14.5px; line-height: 1.6; box-shadow: 0 8px 20px rgba(160,140,120,0.12); border: 2px solid rgba(0,0,0,0.03); }
+  .flow .fbox .fn { display: block; font-size: 12.5px; color: #fff; width: 30px; height: 30px; line-height: 30px; border-radius: 50%; margin: 0 auto 6px; }
+  .flow .fbox:nth-child(1) .fn { background: var(--mint); }
+  .flow .fbox:nth-child(3) .fn { background: var(--sun); }
+  .flow .fbox:nth-child(5) .fn { background: var(--sky); }
+  .flow .fbox:nth-child(7) .fn { background: var(--pink); }
+  .flow .arrow { align-self: center; font-size: 26px; font-weight: 900; color: var(--peach); }
+  table.tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border-radius: 18px; overflow: hidden; box-shadow: 0 8px 20px rgba(160,140,120,0.10); font-size: 14px; margin-top: 12px; }
+  table.tbl th { background: rgba(79,168,255,0.14); font-weight: 900; text-align: left; padding: 11px 16px; }
+  table.tbl td { padding: 11px 16px; border-top: 1px solid rgba(0,0,0,0.06); vertical-align: top; line-height: 1.7; }
+  table.tbl td.chk { width: 48px; text-align: center; font-size: 18px; }
+  table.tbl.yn th.y { background: rgba(43,212,160,0.18); }
+  table.tbl.yn th.n { background: rgba(255,111,165,0.18); }
+  table.tbl.yn td { width: 50%; }
+  .promptbox { position: relative; margin-top: 12px; }
+  .promptbox pre { background: #2f2a3a; color: #f4efff; border-radius: 16px; padding: 18px 20px; padding-top: 48px; font-size: 13.5px; line-height: 1.8; white-space: pre-wrap; word-break: break-word; font-family: "Hiragino Sans", "Yu Gothic", Meiryo, monospace; }
+  .promptbox .copy-btn { position: absolute; top: 10px; right: 10px; border: none; cursor: pointer; font-weight: 900; font-size: 13px; color: #fff; padding: 8px 16px; border-radius: 999px; background: linear-gradient(90deg, var(--sky), var(--grape)); box-shadow: 0 6px 14px rgba(79,168,255,0.35); font-family: inherit; }
+  .promptbox .pb-label { position: absolute; top: 14px; left: 20px; font-size: 12.5px; font-weight: 800; color: #cbbfe8; }
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+  .ba figure { margin: 0; }
+  .ba .cap { display: block; text-align: center; font-weight: 900; font-size: 14px; margin-bottom: 6px; }
+  .ba .cap.b { color: var(--pink); } .ba .cap.a { color: #14a47a; }
+  .ba .shot { margin-top: 0; }
+  .four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+  .four .it { background: rgba(155,107,255,0.08); border: 2px solid rgba(155,107,255,0.3); border-radius: 16px; padding: 12px 14px; font-size: 13.5px; line-height: 1.7; text-align: center; font-weight: 800; }
+  .four .it span { display: block; font-size: 22px; }
+  .sample { background: #fff; border: 2px dashed rgba(79,168,255,0.5); border-radius: 16px; padding: 14px 18px; font-size: 13.5px; line-height: 1.8; margin-top: 12px; font-family: Arial, sans-serif; color: var(--ink); }
+  .sample b { color: var(--grape); }
+  @media (max-width: 900px) { .four { grid-template-columns: 1fr 1fr; } .ba { grid-template-columns: 1fr; } .flow .arrow { transform: rotate(90deg); width: 100%; text-align: center; } }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <span class="eyebrow">📤 とりこみ君</span>
+      <h1>とりこみ君からスプレッドシートへ送る手順</h1>
+      <p class="lead">1回目は「内容確認」→「スプレッドシートに追加」、2回目からは「直接送信」で送れます。</p>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head"><span class="emoji">🛠️</span><h2>送る手順</h2></div>
+      <div class="steps">
+
+        <div class="step">
+          <span class="num" aria-hidden="true">1</span>
+          <div class="st-body">
+            <span class="st-title">メルカリなどの商品ページで「内容確認」ボタンを押す</span>
+            <p class="st-text">メルカリなどの商品ページを開いて、右側に出ている<strong>「内容確認」</strong>ボタンを押します。</p>
+            <a class="shot" href="images/step1.png" data-lb><img src="images/step1.png" alt="商品ページ。右側の「内容確認」ボタンを赤い矢印で示している"><span class="zoom-hint">クリックで拡大</span></a>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num" aria-hidden="true">2</span>
+          <div class="st-body">
+            <span class="st-title">「出力先スプレッドシート」を確認して「スプレッドシートに追加」を押す</span>
+            <p class="st-text">画面の一番下にある<strong>「出力先スプレッドシート」</strong>に、送りたいシートの名前が入っているのを確かめます。合っていたら、<strong>「スプレッドシートに追加」</strong>を押します。</p>
+            <a class="shot" href="images/step2.png" data-lb><img src="images/step2.png" alt="内容確認の画面。一番下の「出力先スプレッドシート」と「スプレッドシートに追加」ボタンを赤い矢印で示している"><span class="zoom-hint">クリックで拡大</span></a>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="num" aria-hidden="true">3</span>
+          <div class="st-body">
+            <span class="st-title">2回目からは「直接送信」ボタンで送れる</span>
+            <p class="st-text">2回目からは、商品ページの<strong>「直接送信」</strong>ボタンを押すだけで送れます。</p>
+            <a class="shot" href="images/step3.png" data-lb><img src="images/step3.png" alt="商品ページ。右側の「直接送信」ボタンを赤い矢印で示している"><span class="zoom-hint">クリックで拡大</span></a>
+          </div>
+        </div>
+
+      </div>
+      <div class="intro" style="margin-top:18px">
+        <div class="info-card c-mint">送ったら、スプレッドシートに行が入っているか確認してください。</div>
+      </div>
+    </div>
+  </section>
+
+  <footer><div class="wrap">とりこみ君の送信ガイド 😊</div></footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="画像の拡大表示" aria-hidden="true">
+    <div class="lb-content" id="lbContent">
+      <button type="button" class="lb-close" id="lbClose" aria-label="閉じる">×</button>
+    </div>
+  </div>
+
+  <script>
+  (function () {
+    var lightbox = document.getElementById('lightbox');
+    var lbContent = document.getElementById('lbContent');
+    var lbClose = document.getElementById('lbClose');
+    var lastFocused = null, media = null;
+    function open(link) {
+      var src = link.querySelector('img');
+      media = document.createElement('img');
+      media.src = src.getAttribute('src');
+      media.alt = src.getAttribute('alt') || '';
+      lbContent.appendChild(media);
+      lastFocused = document.activeElement;
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+    function close() {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (media && media.parentNode) media.parentNode.removeChild(media);
+      media = null;
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-lb]'), function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); open(a); });
+    });
+    lbClose.addEventListener('click', close);
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('is-open')) close();
+    });
+  })();
+  </script>
+</body>
+</html>
